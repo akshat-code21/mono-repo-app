@@ -1,0 +1,20 @@
+name: Deploy to staging
+'on':
+  push:
+    branches:
+      - main
+jobs:
+  redeploy_everything:
+    name: Deplying everything to staging
+    runs-on: ubuntu-latest
+    steps:
+      - name: ssh into server
+        run: |
+          echo ${{ secrets.AWS_SSH_KEY }} &> ~/ssh_key
+          ssh -i ~/ssh_key ubuntu@13.201.166.216
+          cd mono-repo-app/ && git pull
+          pnpm i
+          pnpm run build
+          pm2 restart fe-server
+          pm2 restart http-server
+          pm2 restart ws-server
