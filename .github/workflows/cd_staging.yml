@@ -12,6 +12,7 @@ jobs:
         run: |
           echo "${{ secrets.AWS_SSH_KEY }}" > ~/ssh_key
           chmod 600 ~/ssh_key
+          echo "${{ secrets.KNOWN_HOSTS }}" >> ~/.ssh/known_hosts
           ssh -t -i ~/ssh_key ubuntu@13.201.166.216
           cd mono-repo-app/ && git pull
           pnpm i
