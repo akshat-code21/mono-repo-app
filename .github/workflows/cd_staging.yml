@@ -8,16 +8,18 @@ jobs:
     name: Deploying everything to staging
     runs-on: ubuntu-latest
     steps:
-      - name: ssh into server
+      - name: ssh into server and deploy
         run: |
           echo "${{ secrets.AWS_SSH_KEY }}" > ~/ssh_key
           chmod 600 ~/ssh_key
           mkdir -p ~/.ssh 
           echo "${{ secrets.KNOWN_HOSTS }}" >> ~/.ssh/known_hosts
-          ssh -t -i ~/ssh_key ubuntu@13.201.166.216
-          cd mono-repo-app/ && git pull
-          pnpm i
-          pnpm run build
-          pm2 restart fe-server
-          pm2 restart http-server
-          pm2 restart ws-server
+          ssh -i ~/ssh_key ubuntu@13.201.166.216 '
+            cd mono-repo-app/ && 
+            git pull &&
+            pnpm i &&
+            pnpm run build &&
+            pm2 restart fe-server &&
+            pm2 restart http-server &&
+            pm2 restart ws-server
+          '
