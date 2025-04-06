@@ -11,7 +11,8 @@ jobs:
       - name: ssh into server
         run: |
           echo "${{ secrets.AWS_SSH_KEY }}" > ~/ssh_key
-          ssh -i ~/ssh_key ubuntu@13.201.166.216
+          chmod 600 ~/ssh_key
+          ssh -t -i ~/ssh_key ubuntu@13.201.166.216
           cd mono-repo-app/ && git pull
           pnpm i
           pnpm run build
